@@ -4,7 +4,6 @@ library(readr)
 library(dplyr)
 
 setwd("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE")
-parlgov <- import("parlgov-stable.xlsx")
 
 #Opening the datset -----------------------------------------------------------
 election <- read_csv("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE/view_election.csv")
@@ -336,7 +335,7 @@ View(prova2)
 #Romania nel 1992 solo un partito, nel 96 nessuno.
 #Ungheria nel 2014 solo un partito.
 #Francia nel 1993 aveva solo un partito verde
-#Italy no green parties nel 94 nè nel 96
+#Italy no green parties nel 94 n? nel 96
 #Lithuania no greens nel 1990
 
 #Attention: mi viene il dubbio che alcuni Paesi abbiano avuto verdi alle parlamntari solo tardi
