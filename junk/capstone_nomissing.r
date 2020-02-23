@@ -51,13 +51,10 @@ countries <- election4 %>%
   summarize(
     votes_m = mean(vote_share, na.rm = T)
   )
-countries
+View(countries)
 
 
-
-
-
-#Election starting from 1945
+#Election starting from the first european elections
 election5 <- filter(election4, 
                     election_date > "1979-06-03")
 
@@ -73,6 +70,8 @@ eco_votes <- election6 %>%
   )
 eco_votes
 
+t.test(election6$vote_share~election6$election_type)
+#NOT statistically significant 
 
 
 #Table of vote share for type of election by coutries
@@ -80,7 +79,7 @@ table1 <- election6 %>%
   group_by(country_name,
            election_type) %>%
   summarize_at(vars(vote_share), funs(mean))
-table1
+View(table1)
 
 #nope
 election5$year <- 1
@@ -104,6 +103,15 @@ eco_votes_year <- election7 %>%
     eco_votes_m = mean(vote_share, na.rm = T)
   )
 View(eco_votes_year)
+
+parties <- election7 %>%
+  group_by(country_name,
+           election_type,
+           party_name_english,
+           year,
+           election_date) %>%
+  summarize_at(vars(vote_share), funs(mean))
+View(parties)
 
 
 
@@ -225,7 +233,7 @@ election9 %>%
   ggplot(election9, aes(x = year2, y = vote_share)) +
   geom_line(aes(col = election_type)) +
   facet_wrap(~country_name, ncol = 5) +
-  ylab("Log GDP per capita") +
+  ylab("Percentages of votes") +
   xlab("Year") +
   scale_x_continuous(breaks = seq(1979, 2019, by = 8)) +
   theme_bw()
@@ -240,6 +248,8 @@ ggplot(election9, aes(x = year2, y = vote_share)) +
     xlab("Year") +
   scale_x_continuous(breaks = seq(1979, 2019, by = 8)) +
   theme_bw()
+
+
 
 #nope
 ggplot(election9, aes(x = year2, y = vote_share)) +
@@ -282,14 +292,71 @@ ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
 
 
 
-#Quali Paesi hanno solo partiti verdi alle europee?
+#Quali Paesi hanno  partiti verdi solo alle europee?
+
+table2 <- select(election8, country_name, election_type, party_name_english,party_id, year2)
+table2 <- arrange(table2, country_name)
+View(table2)
+#problem: in election8 i removed missing which is what i am interested in right now
+#let's use election3
 
 
 
+table3 <- select(election3, country_name, election_type, vote_share, party_name_english, family_name_short, party_id, election_date)
+table4 <- filter(table3,
+                 family_name_short == "eco")
+table4 <- arrange(table4, country_name)
+
+View(table4)
+
+table4 <- ifelse(table4$vote_share == "NA", country_name ,0)
+View(table4)
+
+##OLEEEEEEE
+#voglio sapere quali paesi NON hanno partiti verdi alle parlamentari
+#Tenere solo partiti verdi e solo elezioni parlamentari e vedere i missing
+
+prova <- filter(election3,
+                family_name_short =="eco",
+                election_type == "parliament")
+prova2 <- select(prova, country_name, party_name_english, election_date, vote_share)
+prova2$missing <- ifelse (is.na(prova2$vote_share), 0 ,1)
+
+#to see quickly all the missing values
+prova2 <- arrange(prova2, missing, country_name, election_date)
+View(prova2)
+#to check if missing values correspond only to certain parties but there are still some greens.
+prova2 <- arrange(prova2, country_name, election_date)
+View(prova2)
 
 
 
+#Portogallo nel 1983, 85, 87, 1991,95, 99, 2002, 2005 no green parties; dal 2011 si.
+#Lithuania nel 1990
+#Romania nel 1992 solo un partito, nel 96 nessuno.
+#Ungheria nel 2014 solo un partito.
+#Francia nel 1993 aveva solo un partito verde
+#Italy no green parties nel 94 nè nel 96
+#Lithuania no greens nel 1990
+
+#Attention: mi viene il dubbio che alcuni Paesi abbiano avuto verdi alle parlamntari solo tardi
+#Per esempio in spagna nel 2019.
+spain <- filter(election3,
+                country_name == "Spain",
+                family_name_short =="eco")
+View(spain)
+
+#Come controllo questa cosa?
+
+#Da che anno i verdi hanno gareggiato alle europee? e da che anno alle parlamentari?
+seventeen <- filter(election3,
+                    family_name_short =="eco",
+                    election_date > "2016-12-11")
+View(seventeen)
 
 
+greens_enter <- filter(election4,
+                       family_name_short == "eco")
+View(greens_enter)
 
 
