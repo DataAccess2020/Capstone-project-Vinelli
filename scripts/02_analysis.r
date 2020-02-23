@@ -116,3 +116,85 @@ election8 %>%
        color = "")+
   ggtitle("Percentages of votes to green \n parties for type of election")
 
+election9 <- filter(election8,
+                    country_name %in% c ("Austria", "Belgium", "Czech Republic", "Denmark", 
+                                         "Estonia", "Finland", "France", "Germany", "Greece", 
+                                         "Hungary", "Ireland", "Italy", "Luxembourg", "Malta",
+                                         "Netherlands", "Portugal", "Slovenia", "Sweden", "United Kingdom"))
+View(election9)
+
+#Second graph---------------------------------------------------------------------
+ggplot(election9, aes(x = year2, y = vote_share)) +
+  geom_line(aes(col = election_type)) +
+  facet_wrap(~country_name, ncol = 5) +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +   ylab("Share of votes") +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  xlab("Year") +
+  scale_x_continuous(breaks = seq(1979, 2019, by = 8)) +
+  theme_bw()
+
+#Third graph----------------------------------------------------------------------
+ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
+  geom_bar(stat = "identity", position = "dodge", col = "black", width = 1.0005) +
+  facet_wrap(~country_name, ncol = 5) +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  ylab("Share of votes") +
+  xlab("years") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+#Fourth graph------------------------------------------------------------------------
+ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
+  geom_bar(stat = "identity", position = "dodge", col = "black") +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  ylab("Share of votes") +
+  xlab("years") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+
+#Trying to see which country, and when, did not have green parties at the parliamentary elections.
+parliament_eco <- filter(election3,
+                family_name_short =="eco",
+                election_type == "parliament")
+parliament_eco2 <- select(parliament_eco, country_name, party_name_english, election_date, vote_share)
+parliament_eco2$missing <- ifelse (is.na(parliament_eco2$vote_share), 0 ,1)
+
+#Creating a variable to see quickly all the missing values
+parliament_eco2 <- arrange(parliament_eco2, missing, country_name, election_date)
+View(parliament_eco2)
+#Checking if missing values correspond only to certain parties but there are still some greens.
+parliament_eco2 <- arrange(parliament_eco2, country_name, election_date)
+View(parliament_eco2)
+
+
+
+#Portugal in 1983, 1985, 1987, 1991, 1995, 1999, 2002, 2005 had no green parties; Starts from 2011.
+#Lithuania in 1990
+#Romania in 1992 had only one green party, in 96 none.
+#Hungary had one green party in 2014.
+#France had only one green party in 1993.
+#Italy had no green parties in 1994 and 1996.
+#Lithuania had no greens in 1990
+
+#Attention: Checking if some Countries had green parties only later on.
+#For example Spain in 2019.
+spain <- filter(election3,
+                country_name == "Spain",
+                family_name_short =="eco")
+View(spain)
+
+#Come controllo questa cosa?
+
+#Since when did Greens partecipated in european elections? and parliamentary?
+greens_enter <- filter(election4,
+                       family_name_short == "eco")
+View(greens_enter)
+
+
+
