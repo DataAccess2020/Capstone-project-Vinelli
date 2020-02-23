@@ -163,9 +163,10 @@ parliament_eco <- filter(election3,
                 family_name_short =="eco",
                 election_type == "parliament")
 parliament_eco2 <- select(parliament_eco, country_name, party_name_english, election_date, vote_share)
-parliament_eco2$missing <- ifelse (is.na(parliament_eco2$vote_share), 0 ,1)
 
 #Creating a variable to see quickly all the missing values
+parliament_eco2$missing <- ifelse (is.na(parliament_eco2$vote_share), 0 ,1)
+
 parliament_eco2 <- arrange(parliament_eco2, missing, country_name, election_date)
 View(parliament_eco2)
 #Checking if missing values correspond only to certain parties but there are still some greens.
