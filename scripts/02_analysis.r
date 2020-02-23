@@ -114,7 +114,7 @@ election8 %>%
   labs(x= "Year",
        y= "Percentages of votes",
        color = "")+
-  ggtitle("Percentages of votes to green \n parties for type of election")
+  ggtitle("Percentages of votes to green parties for type of election")
 
 election9 <- filter(election8,
                     country_name %in% c ("Austria", "Belgium", "Czech Republic", "Denmark", 
