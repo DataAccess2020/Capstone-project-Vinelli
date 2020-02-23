@@ -129,10 +129,13 @@ ggplot(election9, aes(x = year2, y = vote_share)) +
   facet_wrap(~country_name, ncol = 5) +
   scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
                     "Type of election") +   ylab("Share of votes") +
+  scale_color_hue(labels = c("european elections", "parliamentary elections"))+
   scale_y_continuous(labels = function(x) paste0(x, "%"))+
   xlab("Year") +
   scale_x_continuous(breaks = seq(1979, 2019, by = 8)) +
-  theme_bw()
+  theme_bw()+
+  ggtitle("Percentages of votes to green parties among countries")
+
 
 #Third graph----------------------------------------------------------------------
 ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
@@ -144,7 +147,9 @@ ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
   ylab("Share of votes") +
   xlab("years") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  ggtitle("Percentages of votes to green parties among countries")
+
 
 #Fourth graph------------------------------------------------------------------------
 ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
@@ -155,7 +160,9 @@ ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
   ylab("Share of votes") +
   xlab("years") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  ggtitle("Percentages of votes to green parties for type of election over time")
+
 
 
 #Trying to see which country, and when, did not have green parties at the parliamentary elections.
