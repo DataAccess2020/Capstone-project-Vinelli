@@ -10,3 +10,6 @@ The analysis was conducted in several steps, using the R software:
 3. Recoding the data according to the purposes of the analysis.
 4. Conducting the analysis.
 5. Interpreting the results.
+
+### Organization of the work
+The work was structured in folders.
