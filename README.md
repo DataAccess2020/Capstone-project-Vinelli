@@ -15,9 +15,9 @@ The analysis was conducted in several steps, using the R software:
 
 ### Organization of the work
 The work was structured in folders.
-**scripts** This folder contains the R scripts with the code for the analysis.
-**docs** This folder contains the report in which the project is entirely described.
-**junk** This folder contains those files that have been useful for the analysis but that were too messy.
+.**scripts** This folder contains the R scripts with the code for the analysis.
+.**docs** This folder contains the report in which the project is entirely described.
+.**junk** This folder contains those files that have been useful for the analysis but that were too messy.
 
 ## Contribution
 Hopefully this project will contribute, in a tiny part, to the large set of research that are conducted on the topic of electoral competition of political parties. 
