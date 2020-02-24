@@ -1,6 +1,6 @@
 ---
 title: "Capstone_Project"
-author: "Anna Ludovica Vinelli" word count 1262
+author: "Anna Ludovica Vinelli" 
 date: "23/2/2020"
 output: html_document
 ---
