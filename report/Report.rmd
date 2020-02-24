@@ -1,0 +1,241 @@
+---
+title: "Capstone_Project"
+author: "Anna Ludovica Vinelli" word count 1262
+date: "23/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+# Electoral success of Green parties at European elections. A comparative analysis
+
+Given the 2019 European elections, Green parties have been described as ["big winners"](https://www.ft.com/content/56183ac6-807a-11e9-9935-ad75bb96c849) (Brunsden, Financial Times, 2019) with an unprecedented result. Starting from what has been described in literature as "niche parties" (Meguid, 2005) and from the distinction between "first-order" and "second-order" elections (Reif, Schmitt, 1980), this project aims to try to answer to the following question: *Is there a relation between the specific type of party, that is Greens, and the type of election, that is European?* To understand better about the possible aspects underlying the Ecologist parties result, data from the ParlGov database (Döring and Manow 2019) have been used to compare European and National elections over time.
+
+## Theoretical introduction
+Green parties belong to a particular category of political parties that differs from the mainstream one: the "niche parties" category (Meguid,2005). This type of parties bring new issues to the arena of the political debate, issues that cross-cut traditional divisions, and they are usually perceived as single-issues parties (Meguid,2005). Having these characteristics that oppose them to mainstream parties it is interesting to see whether, according to what Reif and Schmitt hypothesized for small and new political parties in their analysis, Green parties gain more votes at European elections. In fact, in the study conducted by Reif and Schmitt, European elections are considered among "second-order elections", whereas "first-order elections" are the national parliamentary elections and the national presidential elections, (for parliamentary systems and presidential systems respectively) (Reif, Schmitt, 1980).  Starting from what has been discussed in literature and because of the resounding result of Green parties at the 2019 European elections, this study aims to get a deeper understanding of the chances that environmentalist parties have in different political arenas.
+
+# Data analysis
+The two datasets used for the analysis are the ParlGov Database "view_party" and "view_election" ones which contain the variables of interest.
+Some of them have been recoded to adapt them to the purposes of the research. In particular, in order to make timeline plots, the variable "election_date" has been recoded into two different ones: "year1" that is divided in decades starting from the year of the first European election; "year2" that is recoded in single years.
+Also a variable called "missing" was created to have a quick overlook of the countries that had no Green parties at parliamentary elections in given years.
+
+# Hypothesis
+According to how Green parties have been described in literature and to what characterizes European elections, the first hypothesis follows:
+*Green parties gain more votes at European elections than at parliamentary elections.*
+
+To test this hypothesis the Welch's t-test has been conducted on the average share of votes received by ecologists at European elections and at parliamentary elections.
+
+```{r, echo = F, results = 'hide'}
+library(tidyverse)
+library(rio)
+library(readr)
+library(dplyr)
+
+setwd("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE")
+election <- read_csv("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE/view_election.csv")
+party <- read_csv("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE/view_party.csv")
+family <- select(party, party_id, family_name, family_name_short)
+election <- merge(election, family, by= "party_id")
+election2 <- select(election, country_name, election_type, election_date, vote_share, party_name, party_name_english, party_id, family_name, family_name_short, left_right)
+election3 <- filter(election2,
+                    country_name %in% c( "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", 
+                                         "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", 
+                                         "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg",
+                                         "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia",
+                                         "Slovenia", "Spain", "United Kingdom", "Sweden"))
+election4 <- na.omit(election3)
+dim(election4)
+apply(election4, 2, function(x) sum(is.na(x)))
+
+election5 <- filter(election4, 
+                    election_date > "1979-06-03")
+election6 <- filter(election5,
+                    family_name_short == "eco")
+eco_votes <- election6 %>% 
+  group_by(election_type) %>%
+  summarize(
+    eco_votes_m = mean(vote_share, na.rm = T)
+  )
+eco_votes
+```
+
+
+
+```{r, echo = F}
+t.test(election6$vote_share~election6$election_type)
+
+```
+
+Even though there's a difference of almost 2 points between the means, it is not statistically significant.
+
+```{r, echo = F, results = 'hide'}
+election7 <- mutate(
+  election6,
+  year = ifelse(election6$election_date <= "1979-10-23", 1970,
+                ifelse(election6$election_date <= "1989-11-05", 1980,
+                       ifelse(election6$election_date <= "1999-10-03", 1990,
+                              ifelse(election6$election_date <= "2009-10-04", 2000,
+                                     ifelse(election6$election_date <= "2019-12-12", 2010)))))
+) 
+
+```
+
+However, in the following table, we can see that the share of votes for Green parties increased at European elections over the years. Starting from the 80s it seems to be always higher than the share of votes of Ecologists at parliamentary elections.
+
+### Table of mean of votes by year and by election type
+
+```{r, echo = F}
+library(knitr)
+eco_votes_year <- election7 %>% 
+  group_by(year,election_type) %>%
+  summarize(
+    eco_votes_m = mean(vote_share, na.rm = T)
+  )
+  kable(eco_votes_year)
+```
+
+The same result can be seen in the first graph. When plotting the share of votes gained by Ecologists over time for each type of election we can see that European elections seem to offer a more favorable occasion to gain votes.
+
+## First graph
+```{r, echo = F, results = 'hide'}
+election8 <- mutate(
+  election7,
+  year2 = ifelse(election7$election_date <= "1979-10-23", 1979,
+ifelse(election7$election_date <= "1980-10-05", 1980,
+ifelse(election7$election_date <= "1981-12-08", 1981,
+ifelse(election7$election_date <= "1982-09-19", 1982,
+ifelse(election7$election_date <= "1983-04-24", 1983,
+ifelse(election7$election_date <= "1984-06-17", 1984,
+ifelse(election7$election_date <= "1985-10-13", 1985,
+ifelse(election7$election_date <= "1986-11-23", 1986,
+ifelse(election7$election_date <= "1987-12-13", 1987,
+ifelse(election7$election_date <= "1988-09-18", 1988,
+ifelse(election7$election_date <= "1989-11-05", 1989,
+ifelse(election7$election_date <= "1990-12-12", 1990,
+ifelse(election7$election_date <= "1991-11-24", 1991,
+ifelse(election7$election_date <= "1992-12-06", 1992,
+ifelse(election7$election_date <= "1993-06-06", 1993,
+ifelse(election7$election_date <= "1994-10-16", 1994,
+ifelse(election7$election_date <= "1995-12-17", 1995,
+ifelse(election7$election_date <= "1996-11-10", 1996,
+ifelse(election7$election_date <= "1997-06-06", 1997,
+ifelse(election7$election_date <= "1998-10-03", 1998,
+ifelse(election7$election_date <= "1999-10-03", 1999,
+ifelse(election7$election_date <= "2000-10-15", 2000,
+ifelse(election7$election_date <= "2001-11-20", 2001,
+ifelse(election7$election_date <= "2002-11-24", 2002,
+ifelse(election7$election_date <= "2003-05-18", 2003,
+ifelse(election7$election_date <= "2004-10-03", 2004,
+ifelse(election7$election_date <= "2005-09-18", 2005,
+ifelse(election7$election_date <= "2006-11-22", 2006,
+ifelse(election7$election_date <= "2007-11-13", 2007,
+ifelse(election7$election_date <= "2008-09-28", 2008,
+ifelse(election7$election_date <= "2009-10-04", 2009,
+ifelse(election7$election_date <= "2010-09-19", 2010,
+ifelse(election7$election_date <= "2011-09-15", 2011,
+ifelse(election7$election_date <= "2012-09-12", 2012,
+ifelse(election7$election_date <= "2013-10-25", 2013,
+ifelse(election7$election_date <= "2014-09-14", 2014,
+ifelse(election7$election_date <= "2015-11-08", 2015,
+ifelse(election7$election_date <= "2016-10-09", 2016,
+ifelse(election7$election_date <= "2017-10-21", 2017,
+ifelse(election7$election_date <= "2018-10-14", 2018,
+ifelse(election7$election_date <= "2019-12-12", 2019)))))))))))))))))))))))))))))))))))))))))
+)
+```
+
+
+```{r, echo= F}
+election8 %>%
+  count(election_type, year2) %>%
+  mutate(vote_share =n / sum(n)) %>%
+  ggplot(aes(year2, vote_share, color = election_type))+
+  geom_smooth(se= FALSE)+
+  scale_color_hue(labels = c("european elections", "parliamentary elections"))+
+  scale_y_continuous(labels = scales::percent)+  
+  scale_x_continuous(breaks = seq(1979, 2019, by =5))+
+  labs(x= "Year",
+       y= "Percentages of votes",
+       color = "")+
+  ggtitle("Percentages of votes to green parties for type of election")
+```
+
+
+```{r, echo = F, results = 'hide'}
+election9 <- filter(election8,
+                    country_name %in% c ("Austria", "Belgium", "Czech Republic", "Denmark", 
+                                         "Estonia", "Finland", "France", "Germany", "Greece", 
+                                         "Hungary", "Ireland", "Italy", "Luxembourg", "Malta",
+                                         "Netherlands", "Portugal", "Slovenia", "Sweden", "United Kingdom"))
+```
+
+## Second graph
+```{r, echo= F}
+ggplot(election9, aes(x = year2, y = vote_share)) +
+  geom_line(aes(col = election_type)) +
+  facet_wrap(~country_name, ncol = 4) +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +   ylab("Share of votes") +
+  scale_color_hue(labels = c("european elections", "parliamentary elections"))+
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  xlab("Year") +
+  scale_x_continuous(breaks = seq(1979, 2019, by = 10)) +
+  theme_bw()+
+    theme(legend.position = "bottom")+
+  ggtitle("Percentages of votes to green parties among countries")
+```
+
+As we can see from the second graph, there are some differences among countries. Unfortunately, one of the difficulty encountered in this project was to calculate on R a T test to check the statistical significance of the difference among the means of vote share **for every country**. So, I am conscious that this results might not be accurate enough.
+Having said so, from the simple graph, we can see that, for example, the Green party of Austria entered the European elections in 1996 but it had on average a better result at European elections. Same goes for Belgium, whose Greens participated in the first European elections of 1979 but gained more votes starting from 1989. Also, Belgium had two different green parties competing at European elections. A very important Ecologist party is the German one, Die Grünen, which participated at European elections from 1979 starting with a 3.2% vote share. Another country whose Green political parties participated from the first European election is the Netherlands, with the Radical Political Party sustaining the green issues in 1979 and later on with the Green Left in 1984. The Green party of the UK seems to have had better results at European elections than at national elections. It participated at European elections from 1989.
+
+## Third graph
+
+The third graph is probably more intuitive than the second one but it was a little tricky to create because of the proportion of votes on the axis, and I managed to make it after several attempts. It shows for each country the share of votes gained by Greens at a given elections but it also shows the number of elections, both parliamentary and european, to which they participated or they gained at least a minimum amount of votes.
+
+
+```{r, echo= F}
+ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
+  geom_bar(stat = "identity", position = "dodge", col = "black", width = 1.0005) +
+  facet_wrap(~country_name, ncol = 5) +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  ylab("Share of votes") +
+  xlab("years") +
+  theme_bw() +
+  theme(legend.position = "bottom")+
+  ggtitle("Percentages of votes to green parties among countries")
+```
+
+
+## Fourth graph
+
+The fourth graph shows the overall trend, without differentiating for the countries and it seems like the share of votes to Green parties was not constantly increasing but, still, it got to a higher level in the last years at European elections. The latter seem to favour the results of Greens more than the parliamentary elections.
+
+```{r, echo= F}
+ggplot(election9, aes(x = year2, y = vote_share, fill = election_type)) +
+  geom_bar(stat = "identity", position = "dodge", col = "black") +
+  scale_fill_manual(values = c("springgreen4", "steelblue"), labels= c("european elections", "parliamentary elections"),
+                    "Type of election") +
+  scale_y_continuous(labels = function(x) paste0(x, "%"))+
+  ylab("Share of votes") +
+  xlab("years") +
+  theme_bw() +
+  theme(legend.position = "bottom")+
+  ggtitle("Percentages of votes to green parties for type of election over time")
+```
+
+
+## Comments
+Overall I think that this project was very challenging in many aspects of conducting a research with data. It was exciting but also it showed some difficulties. At first it was hard to find the right idea to work on, one that had both some challenges but that was also doable, especially working alone; secondly it was important to implement all the new things we learnt and to develop the skills needed to be able to work on R and Github, and that was not easy. I realised what are the aspects that I have to improve, both at the initial part of **organizing** the job and also at the practical stage of using R because I am not an expert of coding. This project was definitely a first glance into the real world of doing an empirical research, and it was very intense to try to find on my own a solution to the problems that came on the way, looking for them on the internet and finding that someone else in the community of R users had already encountered them. This part in particular was very useful in terms of self-learning but also very scary at first because it was hard to try not to ask help and it made me challenge myself. I am quite happy with the result and I find that it's definitely a step toward getting better at working with data.
+
+## References
+Meguid B.M., Competition between Unequals: The Role of Mainstream Party Strategy in Niche Party Success, The America Political Science Review, Vol 99, No. 3, American Political Science Association (Aug. 2005)
+
+ParlGov database (Döring and Manow 2019)
+Döring, Holger and Philip Manow. 2019. Parliaments and governments database (ParlGov): Information on parties, elections and cabinets in modern democracies. Development version.
+
+Reif K., Schmitt H., Nine second-order national elections - A conceptual framework for the analysis of European elections results, European Journal of Political Research, 8 (1980) 3-44 Elsevier Scientific Publishing Company, Amsterdam - Printed in The Netherlands
+
