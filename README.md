@@ -24,3 +24,10 @@ Hopefully this project will contribute, in a tiny part, to the large set of rese
 
 ## Author 
 I am Anna Ludovica Vinelli, and I am a student of the University of Milan.
+
+## References
+Meguid B.M., Competition between Unequals: The Role of Mainstream Party Strategy in Niche Party Success, The America Political Science Review, Vol 99, No. 3, American Political Science Association (Aug. 2005)
+
+ParlGov database (Döring and Manow 2019) Döring, Holger and Philip Manow. 2019. Parliaments and governments database (ParlGov): Information on parties, elections and cabinets in modern democracies. Development version.
+
+Reif K., Schmitt H., Nine second-order national elections - A conceptual framework for the analysis of European elections results, European Journal of Political Research, 8 (1980) 3-44 Elsevier Scientific Publishing Company, Amsterdam - Printed in The Netherlands
