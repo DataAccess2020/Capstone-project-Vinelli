@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
 ```
 
+Anna Ludovica Vinelli   word count 1262
+
 # Electoral success of Green parties at European elections. A comparative analysis
 
 Given the 2019 European elections, Green parties have been described as ["big winners"](https://www.ft.com/content/56183ac6-807a-11e9-9935-ad75bb96c849) (Brunsden, Financial Times, 2019) with an unprecedented result. Starting from what has been described in literature as "niche parties" (Meguid, 2005) and from the distinction between "first-order" and "second-order" elections (Reif, Schmitt, 1980), this project aims to try to answer to the following question: *Is there a relation between the specific type of party, that is Greens, and the type of election, that is European?* To understand better about the possible aspects underlying the Ecologist parties result, data from the ParlGov database (Döring and Manow 2019) have been used to compare European and National elections over time.
@@ -28,14 +30,19 @@ According to how Green parties have been described in literature and to what cha
 To test this hypothesis the Welch's t-test has been conducted on the average share of votes received by ecologists at European elections and at parliamentary elections.
 
 ```{r, echo = F, results = 'hide'}
-library(tidyverse)
-library(rio)
-library(readr)
-library(dplyr)
 
-setwd("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE")
-election <- read_csv("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE/view_election.csv")
-party <- read_csv("C:/Users/vinel/Documents/2_DATA ACCESS/CAPSTONE/view_party.csv")
+source(here::here("scripts","00_setup.R"))
+
+# Working directory from .Rproj
+here::here("")
+
+#Opening datasets-----------------------------------------------------------------
+
+#Opening the election datset
+election <- read_csv("data/view_election.csv")
+#Opening the party dataset
+party <- read_csv("data/view_party.csv")
+
 family <- select(party, party_id, family_name, family_name_short)
 election <- merge(election, family, by= "party_id")
 election2 <- select(election, country_name, election_type, election_date, vote_share, party_name, party_name_english, party_id, family_name, family_name_short, left_right)
